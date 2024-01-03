@@ -1,49 +1,44 @@
-const showdata = require("./main.js");
-import axios from "axios";
-import express from "express";
-import bodyParser from "body-parser";
-const app = express();
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+import express from 'express'
+import axios from 'axios'
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
 
-const dir = dirname(fileURLToPath(import.meta.url));
-const port = 3000;
-console.log("this is dir",dir);
+const app = express()
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const port = 3000
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static(join(__dirname)))
+
 const config = {
- 
   headers: {
-    'X-RapidAPI-Key': '4fe27b8b6emsh162277692ee04e7p13be95jsnafdf3e7b04b6',
-    'X-RapidAPI-Host': 'open-weather13.p.rapidapi.com'
+    key: '1a94f71ecf1f4d1f9a720744230709',
+  },
+}
+
+app.get('/', (req, res) => {
+  res.sendFile(join(__dirname, '/index.html'))
+})
+
+app.post('/post', async (req, res) => {
+  try {
+    const place = req.body.location
+    console.log('Form submitted:', place)
+
+    const result = await axios.get(
+      `http://api.weatherapi.com/v1/current.json?key=${config.headers.key}&q=${place}`
+    )
+
+    console.log(result)
+    res.json(result.data)
+  } catch (error) {
+    console.error(error.response || error)
+    res.status(500).send('Internal Server Error')
   }
-};
-app.use(bodyParser.json());
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(dir));
-
-app.get("/",async(req,res)=>{
-res.sendFile(dir+"/index.html");
-});
-app.post("/post",async(req,res)=>{
-try
-{
-const place=req.body.location;
-console.log(place);
-const result=await axios.get(`https://open-weather13.p.rapidapi.com/city/${place}`,config);
-console.log(result);
-showdata(result);
-
-}
-catch(error)
-{
-  //console.error(error);
-}
-});
-
-// $("#data").click(function(){
-// $("h1").text(result);
-// });
+})
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+  console.log(`Server is running on port ${port}`)
+})

@@ -5,47 +5,18 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Weather app</title>
- 
-
   <link rel="stylesheet" href="index.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 </head>
 <body>
 
+  <form id="weather-form" action="/post" method="post">
+    <label for="location">Enter place:</label>
+    <input type="text" id="location" name="location" required>
+    <button type="submit">Get Weather</button>
+  </form>
 
+  <div id="result"></div>
 
-<form action="/post" method="post"> 
-  <label for="location">Enter place</label>
-  <input type="text" id="location" name="location">
-  <label for="submit"></label>
-  <input  type="submit" id="data" value="submit">
-</form>
-<div id="result">
-<h1></h1>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script type="module" src="./main.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-    
-    <script  type="module" src="./index.js" charset="utf-8"></script>
-   
+  <script type="module" src="./main.js"></script>
 </body>
