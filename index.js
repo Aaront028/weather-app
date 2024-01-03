@@ -1,42 +1,52 @@
-import { JSDOM } from 'jsdom';
-import jQuery from 'jquery';
-const { window } = new JSDOM('');
-const $ = jQuery(window);
-import { greet, message} from "./main.js";
-const greet_scaler = greet("Scaler");
-import axios from "axios";
-import express from "express";
-import bodyParser from "body-parser";
-const app = express();
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+// import { JSDOM } from 'jsdom';
+// import jQuery from 'jquery';
+// const { window } = new JSDOM('');
+// const $ = jQuery(window);
+import express from 'express'
+import axios from 'axios'
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
 
-const dir = dirname(fileURLToPath(import.meta.url));
+const app = express()
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static(join(__dirname)))
+
+
+
+
+
 const port = 3000;
-window.jQuery = window.$ = $; 
+//window.jQuery = window.$ = $; 
 const config = {
  
   headers: {
-    'X-RapidAPI-Key': '4fe27b8b6emsh162277692ee04e7p13be95jsnafdf3e7b04b6',
-    'X-RapidAPI-Host': 'open-weather13.p.rapidapi.com'
+    key:"69bec42602954187bf8125713240301"
+
+
   }
 };
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(dir));
+//app.use(bodyParser.urlencoded({ extended: true }));
 
+console.log("inde.js working");
 app.get("/",(req,res)=>{
-res.sendFile(dir+"/index.html");
+res.sendFile(__dirname,"/index.html");
 });
 app.post("/post",async(req,res)=>{
 try
 {
 const place=req.body.location;
 console.log(place);
-const result=await axios.get(`https://open-weather13.p.rapidapi.com/city/${place}`,config);
-console.log(result);
-res.send(JSON.stringify(result.data,null,2).replace(/(?:\r\n|\r|\n)/g, '<br>'));
+const result=await axios.get(`http://api.weatherapi.com/v1/current.json?key=${config.headers.key}&q=${place}`);
+console.log(result.data);
+//res.send(JSON.stringify(result.data,null,2).replace(/(?:\r\n|\r|\n)/g, '<br>'));
+res.json(result.data);
 
 }
 catch(error)
@@ -46,13 +56,9 @@ catch(error)
 });
 
 
-// $("#data").click(function(){
-// $("h1").text(result);
-// });
 
 
-console.log(greet_scaler); // Hello, Scaler
-console.log(message);
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
